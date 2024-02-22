@@ -34,7 +34,7 @@ from AnonXMusic.utils.inline.settings import (
     vote_mode_markup,
 )
 from AnonXMusic.utils.inline.start import private_panel
-from config import BANNED_USERS, OWNER_ID
+from config import BANNED_USERS, OWNER_ID, MUSIC_BOT_NAME, START_IMG_URL
 
 
 @app.on_message(
@@ -78,8 +78,12 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
         await app.resolve_peer(OWNER_ID)
         OWNER = OWNER_ID
         buttons = private_panel(_)
-        return await CallbackQuery.edit_message_text(
-            _["start_2"].format(CallbackQuery.from_user.mention, app.mention),
+        return await CallbackQuery.edit_message_media(
+            InputMediaPhoto(
+                media=START_IMG_URL,
+                caption=_["start_2"].format(
+                    CallbackQuery.from_user.mention, app.mention),
+            ),
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     else:
@@ -87,6 +91,21 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
         return await CallbackQuery.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(buttons)
         )
+
+
+
+@app.on_callback_query(filters.regex("gib_source"))
+async def gib_repo_callback(_, callback_query):
+    await callback_query.edit_message_media(
+        media=InputMediaVideo("https://graph.org/file/84d30d4fd04570c0e0256.mp4", has_spoiler=True),
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [back_button]
+            ]
+        ),
+    )
+
+back_button = InlineKeyboardButton("ʙᴀᴄᴋ", callback_data=f"settingsback_helper")
 
 
 @app.on_callback_query(
