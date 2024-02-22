@@ -94,7 +94,7 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
             InputMediaPhoto(
                 media=START_IMG_URL,
                 caption=_["start_2"].format(
-                    CallbackQuery.from_user.first_name, app.mention),
+                    CallbackQuery.from_user.mention, app.mention),
             ),
             reply_markup=InlineKeyboardMarkup(buttons),
         )
