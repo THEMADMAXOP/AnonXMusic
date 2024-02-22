@@ -1,4 +1,5 @@
 from pyrogram import filters
+from pyrogram.types import InputMediaVideo
 from pyrogram.enums import ChatType
 from pyrogram.errors import MessageNotModified
 from pyrogram.types import (
@@ -34,7 +35,7 @@ from AnonXMusic.utils.inline.settings import (
     vote_mode_markup,
 )
 from AnonXMusic.utils.inline.start import private_panel
-from config import BANNED_USERS, OWNER_ID, MUSIC_BOT_NAME, START_IMG_URL
+from config import BANNED_USERS, OWNER_ID
 
 
 @app.on_message(
@@ -78,12 +79,8 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
         await app.resolve_peer(OWNER_ID)
         OWNER = OWNER_ID
         buttons = private_panel(_)
-        return await CallbackQuery.edit_message_media(
-            InputMediaPhoto(
-                media=START_IMG_URL,
-                caption=_["start_2"].format(
-                    CallbackQuery.from_user.mention, app.mention),
-            ),
+        return await CallbackQuery.edit_message_text(
+            _["start_2"].format(CallbackQuery.from_user.mention, app.mention),
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     else:
@@ -91,7 +88,6 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
         return await CallbackQuery.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(buttons)
         )
-
 
 
 @app.on_callback_query(filters.regex("gib_source"))
@@ -105,7 +101,8 @@ async def gib_repo_callback(_, callback_query):
         ),
     )
 
-back_button = InlineKeyboardButton("ʙᴀᴄᴋ", callback_data=f"settingsback_helper")
+back_button = InlineKeyboardButton("", callback_data="settingsback_helper")
+
 
 
 @app.on_callback_query(
